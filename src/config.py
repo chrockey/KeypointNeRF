@@ -49,6 +49,12 @@ def create_parser():
         type=int,
         help="The number of GPU devices.",
     )
+    parser.add_argument(
+        "--fold",
+        default=0,
+        type=int,
+        help="The data-fold index to experiment"
+    )
     argcomplete.autocomplete(parser)
     return parser
 

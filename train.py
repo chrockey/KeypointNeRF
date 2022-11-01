@@ -27,6 +27,9 @@ if __name__ == "__main__":
     cfg['expname'] = cfg.get('expname', 'default')
     config.save_config(os.path.join(cfg['out_dir'], cfg['expname']), cfg)
 
+    # Data-fold
+    cfg['dataset']['fold'] = args.fold
+
     # create model
     model = config.get_model(cfg)
 
