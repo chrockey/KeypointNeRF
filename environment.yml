@@ -1,4 +1,4 @@
-name: KeypointNeRF
+name: kpnerf
 channels:
   - pytorch
   - conda-forge
@@ -12,7 +12,6 @@ dependencies:
   - blas=1.0=mkl
   - ca-certificates=2021.10.8=ha878542_0
   - colorama=0.4.4=pyh9f0ad1d_0
-  - cudatoolkit=10.1.243=h036e899_9
   - cycler=0.11.0=pyhd8ed1ab_0
   - freetype=2.10.4=h0708190_1
   - icu=67.1=he1b5a44_0

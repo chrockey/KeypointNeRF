@@ -47,8 +47,14 @@ More details are [here](#Reconstruction-from-a-Single-Image).
 ## Installation 
 Please install python dependencies specified in `environment.yml`:
 ```bash
-conda env create -f environment.yml
-conda activate KeypointNeRF
+# conda env create -f environment.yml
+# conda activate KeypointNeRF
+
+# For A6000 GPU, use the following commands instead:
+conda create -n kpnerf python=3.8 -y
+conda activate kpnerf
+
+pip install -r requirements.txt
 ```
 
 ## Data preparation
