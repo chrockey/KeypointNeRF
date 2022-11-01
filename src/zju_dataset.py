@@ -15,23 +15,40 @@ from torchvision import transforms
 import torch.utils.data as data
 from kornia.geometry.conversions import convert_points_to_homogeneous 
 
-def get_human_split(split):
-    if split == 'train':
-        return {
-            'CoreView_313': {'begin_i': 0, 'i_intv': 1, 'ni': 60},
-            'CoreView_315': {'begin_i': 0, 'i_intv': 6, 'ni': 400},
-            'CoreView_377': {'begin_i': 0, 'i_intv': 30, 'ni': 300},
-            'CoreView_386': {'begin_i': 0, 'i_intv': 6, 'ni': 300},
-            'CoreView_390': {'begin_i': 700, 'i_intv': 6, 'ni': 300},
-            'CoreView_392': {'begin_i': 0, 'i_intv': 6, 'ni': 300},
-            'CoreView_396': {'begin_i': 810, 'i_intv': 5, 'ni': 270}
-        }
-    else:
-        return {
-            'CoreView_387': {'begin_i': 0, 'i_intv': 1, 'ni': 654},
-            'CoreView_393': {'begin_i': 0, 'i_intv': 1, 'ni': 658},
-            'CoreView_394': {'begin_i': 0, 'i_intv': 1, 'ni': 859},
-        }
+
+subject_info = {
+    'CoreView_313': {'begin_i': 0, 'i_intv': 1, 'ni': 60},
+    'CoreView_315': {'begin_i': 0, 'i_intv': 6, 'ni': 400},
+    'CoreView_377': {'begin_i': 0, 'i_intv': 30, 'ni': 300},
+    'CoreView_386': {'begin_i': 0, 'i_intv': 6, 'ni': 300},
+    'CoreView_390': {'begin_i': 700, 'i_intv': 6, 'ni': 300},
+    'CoreView_392': {'begin_i': 0, 'i_intv': 6, 'ni': 300},
+    'CoreView_396': {'begin_i': 810, 'i_intv': 5, 'ni': 270},
+    'CoreView_387': {'begin_i': 0, 'i_intv': 1, 'ni': 654},
+    'CoreView_393': {'begin_i': 0, 'i_intv': 1, 'ni': 658},
+    'CoreView_394': {'begin_i': 0, 'i_intv': 1, 'ni': 859},
+}
+
+
+kfold_test_subjects = [
+    ['CoreView_387', 'CoreView_393', 'CoreView_394'],
+    ['CoreView_315', 'CoreView_377', 'CoreView_392'],
+    ['CoreView_377', 'CoreView_387', 'CoreView_393'],
+    ['CoreView_313', 'CoreView_386', 'CoreView_394'],
+    ['CoreView_387', 'CoreView_390', 'CoreView_396'],
+]
+
+
+def get_human_split_kfold(split, idx):
+    test_keys = set(kfold_test_subjects[idx])
+    keys = subject_info.keys() - test_keys if split == 'train' else test_keys
+
+    return_dict = {}
+    for k in sorted(list(keys)):
+        return_dict[k] = subject_info[k]
+
+    return return_dict
+
 
 class ZJUDataset(data.Dataset):
     ''' This data loader loads the Zju-MoCap dataset (CVPR'21). '''
@@ -56,7 +73,7 @@ class ZJUDataset(data.Dataset):
         self.cam_inds = []
         self.start_end = {}
 
-        human_info = get_human_split(split)
+        human_info = get_human_split_kfold(split, kwargs.get('fold', 0))
         human_list = list(human_info.keys())
 
         if self.split in ['test', 'val']:
@@ -434,7 +451,7 @@ class ZJUTestDataset(ZJUDataset):
 
         # load im list
         self.sc_factor = 1.0
-        human_info = get_human_split(self.split)
+        human_info = get_human_split_kfold(self.split, kwargs.get('fold', 0))
         human_list = list(human_info.keys())
         _inds = []
         inds = np.arange(0, len(self.ims))
