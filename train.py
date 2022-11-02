@@ -24,7 +24,10 @@ if __name__ == "__main__":
     if args.out_dir is not None:
         cfg['out_dir'] = args.out_dir
 
-    cfg['expname'] = cfg.get('expname', 'default')
+    if args.expname is not None:
+        cfg['expname'] = args.expname
+    else:
+        cfg['expname'] = cfg.get('expname', 'default')
     config.save_config(os.path.join(cfg['out_dir'], cfg['expname']), cfg)
 
     # Data-fold

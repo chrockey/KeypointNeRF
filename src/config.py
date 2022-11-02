@@ -55,6 +55,12 @@ def create_parser():
         type=int,
         help="The data-fold index to experiment"
     )
+    parser.add_argument(
+        "--expname",
+        default=None,
+        type=str,
+        help="Experiment name"
+    )
     argcomplete.autocomplete(parser)
     return parser
 
